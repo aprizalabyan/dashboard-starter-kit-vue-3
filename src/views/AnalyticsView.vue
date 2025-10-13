@@ -1,6 +1,6 @@
 <template>
   <section class="d-flex pa-4 w-100">
-    ini dashboard
+    ini analytics
   </section>
 </template>
 
