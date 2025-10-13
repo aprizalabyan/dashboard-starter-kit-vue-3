@@ -16,6 +16,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "mapbox-gl": "^3.15.0",
     "pinia": "^3.0.3",
     "sass": "^1.93.2",
     "vue": "^3.5.22",
