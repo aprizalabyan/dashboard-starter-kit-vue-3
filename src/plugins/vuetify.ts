@@ -3,8 +3,9 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { md3 } from "vuetify/blueprints";
-import { aliases, mdi } from "vuetify/iconsets/mdi";
+import { aliases as mdiAliases, mdi } from "vuetify/iconsets/mdi";
 import "@mdi/font/css/materialdesignicons.css";
+import { useCustomIconComponent } from "@/composables/useCustomIcon";
 
 const light = {
   dark: false,
@@ -38,5 +39,14 @@ export const vuetify = createVuetify({
       dark,
     },
   },
-  icons: { defaultSet: "mdi", aliases, sets: { mdi } },
+  icons: {
+    defaultSet: "mdi",
+    aliases: {
+      ...mdiAliases,
+    },
+    sets: {
+      mdi,
+      custom: { component: useCustomIconComponent() },
+    },
+  },
 });

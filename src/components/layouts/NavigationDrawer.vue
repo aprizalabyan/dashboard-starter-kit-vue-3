@@ -3,7 +3,7 @@
     <div class="px-4 py-5">Logo</div>
     <v-list nav>
       <v-list-item
-        v-for="(item, i) in ['dashboard', 'analytics']"
+        v-for="(item, i) in ['components', 'others']"
         :key="i"
         class="text-capitalize"
         link

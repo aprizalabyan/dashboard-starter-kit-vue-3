@@ -4,8 +4,8 @@ import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 
 import LoginView from "@/views/LoginView.vue";
-import DashboardView from "@/views/DashboardView.vue";
-import AnalyticsView from "@/views/AnalyticsView.vue";
+import ComponentsView from "@/views/ComponentsView.vue";
+import OthersView from "@/views/OthersView.vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -36,17 +36,17 @@ const router = createRouter({
       children: [
         {
           path: "",
-          redirect: "/dashboard",
+          redirect: "/components",
         },
         {
-          path: "dashboard",
-          name: "dashboard",
-          component: DashboardView,
+          path: "components",
+          name: "components",
+          component: ComponentsView,
         },
         {
-          path: "analytics",
-          name: "analytics",
-          component: AnalyticsView,
+          path: "others",
+          name: "others",
+          component: OthersView,
         },
       ],
     },
@@ -54,7 +54,7 @@ const router = createRouter({
     // redirect not-found path to "/"
     {
       path: "/:pathMatch(.*)*",
-      redirect: "/dashboard",
+      redirect: "/components",
     },
   ],
 });
