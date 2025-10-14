@@ -31,6 +31,7 @@ const props = withDefaults(
 
 const mapContainer = ref<HTMLDivElement | null>(null);
 let map: mapboxgl.Map | null = null;
+let ro: ResizeObserver | null = null;
 
 const accessToken = computed(() => import.meta.env.VITE_MAPBOX_ACCESS_TOKEN as string);
 const mapOptions: {
@@ -136,17 +137,37 @@ const addPolygonLayer = (groupType: string, polygonData: GeoJSON.FeatureCollecti
   );
 };
 
-onMounted(() => {
-  initMapbox();
-
-  const resize = () => map && map.resize();
-  window.addEventListener("resize", resize);
+const resizeObserver = () => {
+  let lastW = 0,
+    lastH = 0;
+  const resizeable = mapContainer.value as Element;
+  ro = new ResizeObserver((entries) => {
+    const cr = entries[0]?.contentRect;
+    const w = Math.round(cr!.width),
+      h = Math.round(cr!.height);
+    if (w !== lastW || h !== lastH) {
+      lastW = w;
+      lastH = h;
+      if (!map) return;
+      requestAnimationFrame(() => map?.resize());
+    }
+  });
+  ro.observe(resizeable);
 
   onBeforeUnmount(() => {
-    window.removeEventListener("resize", resize);
-    map?.remove();
-    map = null;
+    ro?.unobserve(resizeable);
+    ro?.disconnect();
   });
+};
+
+onMounted(() => {
+  initMapbox();
+  resizeObserver();
+});
+
+onBeforeUnmount(() => {
+  map?.remove();
+  map = null;
 });
 </script>
 
