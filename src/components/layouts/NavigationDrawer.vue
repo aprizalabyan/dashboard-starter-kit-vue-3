@@ -19,10 +19,11 @@
 </template>
 
 <script setup lang="ts">
+import { useDrawer } from "@/composables/useDrawer";
 import router from "@/router";
 import { ref, computed } from "vue";
 
-const drawer = ref(true);
+const { drawer } = useDrawer()
 const rail = ref(false);
 
 const currentPage = computed(() => router.currentRoute.value.path);
