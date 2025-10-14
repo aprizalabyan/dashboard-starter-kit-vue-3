@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [
     vue({ template: { transformAssetUrls } }),
     vueDevTools(),
-    vuetify({ autoImport: true }),
+    vuetify({ autoImport: true, styles: { configFile: "src/assets/styles/vuetify.scss" } }),
   ],
   resolve: {
     alias: {
