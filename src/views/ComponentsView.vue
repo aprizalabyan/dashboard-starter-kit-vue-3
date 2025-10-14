@@ -1,25 +1,109 @@
 <template>
   <section class="d-flex flex-column pa-4 ga-4 w-100">
-    <span> Dashboard </span>
+    <span class="text-p16 font-weight-semibold"> Components </span>
     <v-row>
-      <v-col cols="4">
-        <BaseChart type="bar" :data="d_barChart" style="height: 360px" />
-      </v-col>
-      <v-col cols="4">
-        <BaseChart type="line" :data="d_lineChart" style="height: 360px" />
-      </v-col>
-      <v-col cols="4">
-        <BaseChart type="pie" :data="d_pieChart" style="height: 360px" />
+      <v-col cols="6" class="d-flex flex-column ga-3">
+        <InputTextfield
+          v-model="inputForm.name"
+          label="Name"
+          placeholder="Input name"
+          required
+          :rules="[r_required]"
+        />
+        <div class="d-flex ga-3">
+          <InputTextfield
+            v-model="inputForm.email"
+            label="Email"
+            placeholder="Input email"
+            required
+            :rules="[r_required, r_email]"
+          />
+          <InputTextfield
+            v-model="inputForm.password"
+            placeholder="Input password"
+            label="Password"
+            :type="showPass ? 'text' : 'password'"
+            required
+            :rules="[r_required]"
+          >
+            <template #append-inner>
+              <v-icon
+                :icon="showPass ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+                @click="showPass = !showPass"
+              />
+            </template>
+          </InputTextfield>
+        </div>
+        <div class="d-flex ga-3">
+          <InputSelect
+            v-model="inputForm.gender"
+            :items="['Male', 'Female']"
+            label="Gender"
+            placeholder="Select gender"
+            required
+          />
+          <InputSelect
+            v-model="inputForm.role"
+            :items="['Manager', 'Lead', 'Staff']"
+            label="Role"
+            placeholder="Select role"
+            required
+          />
+        </div>
+        <InputTextarea
+          v-model="inputForm.description"
+          label="Description"
+          placeholder="Input description"
+          :rows="3"
+        />
+        <div class="d-flex ga-3">
+          <InputDatePicker v-model="inputForm.date" label="Date" />
+          <InputTimePicker v-model="inputForm.time" label="Time" />
+        </div>
+        <div class="d-flex justify-end">
+          <BaseButton
+            label="Submit"
+            append-icon="custom:paper-plane"
+            class="px-6"
+            @click="handleSubmit"
+          />
+        </div>
       </v-col>
     </v-row>
+    <span class="text-p16 font-weight-semibold"> Echarts </span>
+    <v-row>
+      <v-col cols="4">
+        <v-card class="pa-3" color="white" flat>
+          <BaseChart type="bar" :data="d_barChart" style="height: 360px" />
+        </v-card>
+      </v-col>
+      <v-col cols="4">
+        <v-card class="pa-3" color="white" flat>
+          <BaseChart type="line" :data="d_lineChart" style="height: 360px" />
+        </v-card>
+      </v-col>
+      <v-col cols="4">
+        <v-card class="pa-3" color="white" flat>
+          <BaseChart type="pie" :data="d_pieChart" style="height: 360px" />
+        </v-card>
+      </v-col>
+    </v-row>
+    <span class="text-p16 font-weight-semibold"> Map </span>
     <BaseMap :height="640" :point-layer="d_mapMarker" :polygon-layer="d_mapPolygon" />
   </section>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import BaseMap from "@/components/map/BaseMap.vue";
 import Jabar from "@/assets/json/JAWA BARAT.json";
 import BaseChart from "@/components/chart/BaseChart.vue";
+import InputTextfield from "@/components/forms/InputTextfield.vue";
+import InputSelect from "@/components/forms/InputSelect.vue";
+import BaseButton from "@/components/button/BaseButton.vue";
+import InputTextarea from "@/components/forms/InputTextarea.vue";
+import InputDatePicker from "@/components/forms/InputDatePicker.vue";
+import InputTimePicker from "@/components/forms/InputTimePicker.vue";
 
 const d_mapMarker: { groupType: string; data: GeoJSON.FeatureCollection }[] = [
   {
@@ -97,6 +181,22 @@ const d_pieChart = {
     { value: 484, name: "Union Ads" },
     { value: 300, name: "Video Ads" },
   ],
+};
+
+const inputForm = ref({
+  name: "",
+  email: "",
+  password: "",
+  gender: "",
+  role: "",
+  description: "",
+  date: "",
+  time: "",
+});
+const showPass = ref(false);
+
+const handleSubmit = () => {
+  console.log("form", inputForm.value);
 };
 </script>
 

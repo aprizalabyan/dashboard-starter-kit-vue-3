@@ -17,3 +17,13 @@ body,
   color: rgb(var(--v-theme-on-background));
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.v-overlay-container {
+  .v-menu {
+    .custom-select-item {
+      .v-list {
+        background: #fff !important;
+      }
+    }
+  }
+}

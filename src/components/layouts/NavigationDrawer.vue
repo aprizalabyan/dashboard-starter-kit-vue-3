@@ -19,9 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { useDrawer } from "@/composables/useDrawer";
-import router from "@/router";
 import { ref, computed } from "vue";
+import router from "@/router";
 
 const { drawer } = useDrawer()
 const rail = ref(false);
