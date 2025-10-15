@@ -94,6 +94,7 @@
       :point-layers="d_mapMarker"
       :polygon-layers="d_mapPolygon"
       :map-legends="d_mapLegends"
+      @click:layer="handleClickLayer"
     />
   </section>
 </template>
@@ -169,6 +170,10 @@ const d_mapLegends = ref<IMapLegendData[]>([
     visibility: true,
   },
 ]);
+
+const handleClickLayer = (e: string) => {
+  console.log("emit", e);
+};
 
 // ----- Echarts data sample -----
 const d_barChart = {

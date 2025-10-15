@@ -51,6 +51,10 @@ const props = withDefaults(
   }
 );
 
+const emit = defineEmits<{
+  (e: "click:layer", value: string): void;
+}>();
+
 const mapContainer = ref<HTMLDivElement | null>(null);
 let map: mapboxgl.Map | null = null;
 let ro: ResizeObserver | null = null;
@@ -119,6 +123,7 @@ const addPointLayer = ({ groupType, data: pointData }: IGeojsonLayer) => {
   });
 
   handleHoverLayer(groupType);
+  handleClickLayer(groupType);
 };
 
 const addPolygonLayer = ({ groupType, data: polygonData }: IGeojsonLayer) => {
@@ -161,6 +166,7 @@ const addPolygonLayer = ({ groupType, data: polygonData }: IGeojsonLayer) => {
   );
 
   handleHoverLayer(groupType);
+  handleClickLayer(groupType);
 };
 
 const handleHoverLayer = (groupType: string) => {
@@ -202,6 +208,7 @@ const handleHoverLayer = (groupType: string) => {
           coordinates = geometry.coordinates as number[];
         } else if (geometry?.type === "Polygon") {
           // coordinates = geometry.coordinates[0][0] as number[];
+          map.getCanvas().style.cursor = "pointer";
           return;
         }
 
@@ -220,6 +227,26 @@ const handleHoverLayer = (groupType: string) => {
     popup?.remove();
     popup = null;
     map.getCanvas().style.cursor = "";
+  });
+};
+
+const handleClickLayer = (groupType: string) => {
+  if (!map) return;
+
+  map.on("click", `layer-${groupType}`, (e) => {
+    if (!e.features?.length) return;
+
+    const properties = e.features[0]?.properties;
+    const parsedProperties: any = {};
+    for (const key in properties) {
+      const value = properties[key];
+      try {
+        parsedProperties[key] = JSON.parse(value);
+      } catch (error) {
+        parsedProperties[key] = value;
+      }
+    }
+    emit("click:layer", parsedProperties);
   });
 };
 
