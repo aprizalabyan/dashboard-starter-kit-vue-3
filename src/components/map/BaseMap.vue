@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, computed } from "vue";
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { Popup } from "mapbox-gl";
 import type { IGeojsonLayer, IMapLegendData } from "@/models/map";
 
 const props = withDefaults(
@@ -117,6 +117,8 @@ const addPointLayer = ({ groupType, data: pointData }: IGeojsonLayer) => {
       "circle-stroke-color": "#fff",
     },
   });
+
+  handleHoverLayer(groupType);
 };
 
 const addPolygonLayer = ({ groupType, data: polygonData }: IGeojsonLayer) => {
@@ -157,6 +159,68 @@ const addPolygonLayer = ({ groupType, data: polygonData }: IGeojsonLayer) => {
     },
     firstSymbolId
   );
+
+  handleHoverLayer(groupType);
+};
+
+const handleHoverLayer = (groupType: string) => {
+  if (!map) return;
+  let hoveredId: string | null = null;
+  let popup: Popup | null = null;
+  // let popupVisible: boolean = false;
+
+  map.on("mouseenter", `layer-${groupType}`, (e) => {
+    if (popup) popup.remove();
+
+    popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: true,
+      offset: [0, -12],
+      maxWidth: "360px",
+      className: "custom-popup",
+    });
+  });
+
+  map.on("mousemove", `layer-${groupType}`, (e) => {
+    if (!e.features?.length) return;
+
+    if (e.features.length > 0) {
+      const featureId =
+        e.features[0]?.properties?.id ||
+        e.features[0]?.properties?.id_kabupaten ||
+        e.features[0]?.properties?.name;
+
+      if (hoveredId !== featureId) {
+        hoveredId = featureId;
+        if (!map) return;
+
+        const geometry = e.features[0]?.geometry;
+        const properties = e.features[0]?.properties;
+        let coordinates: number[] | undefined;
+
+        if (geometry?.type === "Point") {
+          coordinates = geometry.coordinates as number[];
+        } else if (geometry?.type === "Polygon") {
+          // coordinates = geometry.coordinates[0][0] as number[];
+          return;
+        }
+
+        popup
+          ?.setLngLat(coordinates as [number, number])
+          .setHTML(`<div>${properties?.name}</div>`)
+          .addTo(map);
+        map.getCanvas().style.cursor = "pointer";
+      }
+    }
+  });
+
+  map.on("mouseleave", `layer-${groupType}`, () => {
+    hoveredId = null;
+    if (!map) return;
+    popup?.remove();
+    popup = null;
+    map.getCanvas().style.cursor = "";
+  });
 };
 
 const toggleLayerVisibility = (layer: IMapLegendData) => {
