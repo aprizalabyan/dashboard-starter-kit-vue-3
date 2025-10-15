@@ -122,27 +122,27 @@ const d_mapMarker: IGeojsonLayer[] = [
         {
           type: "Feature",
           geometry: { type: "Point", coordinates: [106.8456, -6.2088] },
-          properties: { name: "Jakarta", type: "city" },
+          properties: { name: "Jakarta", type: "city", color: "#2569E0" },
         },
         {
           type: "Feature",
           geometry: { type: "Point", coordinates: [112.7495, -7.2575] },
-          properties: { name: "Surabaya", type: "city" },
+          properties: { name: "Surabaya", type: "city", color: "#2569E0" },
         },
         {
           type: "Feature",
           geometry: { type: "Point", coordinates: [110.3695, -7.7956] },
-          properties: { name: "Yogyakarta", type: "city" },
+          properties: { name: "Yogyakarta", type: "city", color: "#2569E0" },
         },
         {
           type: "Feature",
           geometry: { type: "Point", coordinates: [98.6669, 3.5952] },
-          properties: { name: "Medan", type: "city" },
+          properties: { name: "Medan", type: "city", color: "#2569E0" },
         },
         {
           type: "Feature",
           geometry: { type: "Point", coordinates: [119.4124, -5.1477] },
-          properties: { name: "Makassar", type: "city" },
+          properties: { name: "Makassar", type: "city", color: "#2569E0" },
         },
       ],
     },
@@ -151,7 +151,13 @@ const d_mapMarker: IGeojsonLayer[] = [
 const d_mapPolygon: IGeojsonLayer[] = [
   {
     groupType: "polygon-1",
-    data: Jabar as GeoJSON.FeatureCollection,
+    data: {
+      ...Jabar,
+      features: Jabar.features.map((item) => ({
+        ...item,
+        properties: { ...item.properties, color: "#22C55E" },
+      })),
+    } as GeoJSON.FeatureCollection,
   },
 ];
 const d_mapLegends = ref<IMapLegendData[]>([

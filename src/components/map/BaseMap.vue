@@ -114,7 +114,7 @@ const addPointLayer = ({ groupType, data: pointData }: IGeojsonLayer) => {
     type: "circle",
     source: `data-${groupType}`,
     paint: {
-      "circle-color": "#2569E0",
+      "circle-color": ["coalesce", ["get", "color"], "#000"],
       "circle-opacity": 0.9,
       "circle-radius": 8,
       "circle-stroke-width": 2,
@@ -157,7 +157,7 @@ const addPolygonLayer = ({ groupType, data: polygonData }: IGeojsonLayer) => {
         visibility: "visible",
       },
       paint: {
-        "fill-color": "#22C55E",
+        "fill-color": ["coalesce", ["get", "color"], "#000"],
         "fill-opacity": 0.6,
         "fill-outline-color": "#166534",
       },
