@@ -89,7 +89,12 @@
       </v-col>
     </v-row>
     <span class="text-p16 font-weight-semibold"> Map </span>
-    <BaseMap :height="640" :point-layer="d_mapMarker" :polygon-layer="d_mapPolygon" />
+    <BaseMap
+      :height="640"
+      :point-layers="d_mapMarker"
+      :polygon-layers="d_mapPolygon"
+      :map-legends="d_mapLegends"
+    />
   </section>
 </template>
 
@@ -104,8 +109,10 @@ import BaseButton from "@/components/button/BaseButton.vue";
 import InputTextarea from "@/components/forms/InputTextarea.vue";
 import InputDatePicker from "@/components/forms/InputDatePicker.vue";
 import InputTimePicker from "@/components/forms/InputTimePicker.vue";
+import type { IGeojsonLayer, IMapLegendData } from "@/models/map";
 
-const d_mapMarker: { groupType: string; data: GeoJSON.FeatureCollection }[] = [
+// ----- Map data sample -----
+const d_mapMarker: IGeojsonLayer[] = [
   {
     groupType: "marker-1",
     data: {
@@ -140,14 +147,30 @@ const d_mapMarker: { groupType: string; data: GeoJSON.FeatureCollection }[] = [
     },
   },
 ];
-
-const d_mapPolygon: { groupType: string; data: GeoJSON.FeatureCollection }[] = [
+const d_mapPolygon: IGeojsonLayer[] = [
   {
     groupType: "polygon-1",
     data: Jabar as GeoJSON.FeatureCollection,
   },
 ];
+const d_mapLegends = ref<IMapLegendData[]>([
+  {
+    id: "marker-1",
+    text: "Marker Layer",
+    icon: "mdi-circle",
+    color: "#2569E0",
+    visibility: true,
+  },
+  {
+    id: "polygon-1",
+    text: "Polygon Layer",
+    icon: "mdi-circle",
+    color: "#22C55E",
+    visibility: true,
+  },
+]);
 
+// ----- Echarts data sample -----
 const d_barChart = {
   categories: ["Jan", "Feb", "Mar"],
   series: [
@@ -155,7 +178,6 @@ const d_barChart = {
     { name: "2025", data: [100, 260, 80] },
   ],
 };
-
 const d_lineChart = {
   categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
   series: [
@@ -172,7 +194,6 @@ const d_lineChart = {
     },
   ],
 };
-
 const d_pieChart = {
   data: [
     { value: 1048, name: "Search Engine", itemStyle: { color: "green" } },
@@ -183,6 +204,7 @@ const d_pieChart = {
   ],
 };
 
+// ----- Form data sample -----
 const inputForm = ref({
   name: "",
   email: "",

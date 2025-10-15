@@ -1,10 +1,12 @@
-interface IPointProp {
-  type: string;
-  geometry: { type: string; coordinates: [number, number] };
-  properties: { id: string; name: string };
+export interface IGeojsonLayer {
+  groupType: string;
+  data: GeoJSON.FeatureCollection;
 }
 
-export interface IPointLayer {
-  groupType: string;
-  features: IPointProp[];
+export interface IMapLegendData {
+  id: string;
+  visibility: boolean;
+  text: string;
+  icon: string;
+  color: string;
 }

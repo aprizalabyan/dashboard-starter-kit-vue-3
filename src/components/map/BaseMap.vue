@@ -1,31 +1,53 @@
 <template>
-  <div ref="mapContainer" class="map-container" :style="`height: ${props.height}px`"></div>
+  <div class="parent-container">
+    <div ref="mapContainer" class="map-container" :style="`height: ${props.height}px`" />
+    <div class="overlay-container">
+      <div class="top-left-overlay">
+        <v-sheet class="map-legend text-p14 d-flex flex-column ga-1 pa-3" rounded color="white">
+          <span class="font-weight-medium">Map Legend</span>
+          <div class="d-flex align-center ga-2" v-for="(item, i) in mapLegends" :key="i">
+            <v-icon
+              size="small"
+              :color="item.visibility ? item.color : '#6F708B'"
+              @click="toggleLayerVisibility(item)"
+            >
+              {{ item.visibility ? item.icon : "mdi-eye-off" }}
+            </v-icon>
+            <span>{{ item.text }}</span>
+          </div>
+        </v-sheet>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import mapboxgl from "mapbox-gl";
+import type { IGeojsonLayer, IMapLegendData } from "@/models/map";
 
 const props = withDefaults(
   defineProps<{
     height?: number;
     center?: [number, number];
     zoom?: number;
-    pointLayer?: {
+    pointLayers?: {
       groupType: string;
       data: GeoJSON.FeatureCollection;
     }[];
-    polygonLayer?: {
+    polygonLayers?: {
       groupType: string;
       data: GeoJSON.FeatureCollection;
     }[];
+    mapLegends?: IMapLegendData[];
   }>(),
   {
     height: 480,
     center: () => [118.015776, -2.6000285],
     zoom: 4,
-    pointLayer: () => [],
-    polygonLayer: () => [],
+    pointLayers: () => [],
+    polygonLayers: () => [],
+    mapLegends: () => [],
   }
 );
 
@@ -62,15 +84,15 @@ const initMapbox = () => {
 };
 
 const initLayers = () => {
-  props.pointLayer.forEach((item) => {
-    addPointLayer(item.groupType, item.data);
+  props.pointLayers.forEach((item) => {
+    addPointLayer({ groupType: item.groupType, data: item.data });
   });
-  props.polygonLayer.forEach((item) => {
-    addPolygonLayer(item.groupType, item.data);
+  props.polygonLayers.forEach((item) => {
+    addPolygonLayer({ groupType: item.groupType, data: item.data });
   });
 };
 
-const addPointLayer = (groupType: string, pointData: GeoJSON.FeatureCollection) => {
+const addPointLayer = ({ groupType, data: pointData }: IGeojsonLayer) => {
   if (!map) return;
 
   const source = map.getSource(`data-${groupType}`) as mapboxgl.GeoJSONSource;
@@ -97,7 +119,7 @@ const addPointLayer = (groupType: string, pointData: GeoJSON.FeatureCollection) 
   });
 };
 
-const addPolygonLayer = (groupType: string, polygonData: GeoJSON.FeatureCollection) => {
+const addPolygonLayer = ({ groupType, data: polygonData }: IGeojsonLayer) => {
   if (!map) return;
 
   const source = map.getSource(`data-${groupType}`) as mapboxgl.GeoJSONSource;
@@ -137,6 +159,19 @@ const addPolygonLayer = (groupType: string, polygonData: GeoJSON.FeatureCollecti
   );
 };
 
+const toggleLayerVisibility = (layer: IMapLegendData) => {
+  if (!map) return;
+  layer.visibility = !layer.visibility;
+  const ly = map.getLayer(`layer-${layer.id}`);
+
+  if (!ly) return;
+  if (layer.visibility) {
+    map.setLayoutProperty(`layer-${layer.id}`, "visibility", "visible");
+  } else {
+    map.setLayoutProperty(`layer-${layer.id}`, "visibility", "none");
+  }
+};
+
 const resizeObserver = () => {
   let lastW = 0,
     lastH = 0;
@@ -171,9 +206,21 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
-.map-container {
+<style scoped lang="scss">
+.parent-container {
   position: relative;
-  width: 100%;
+
+  .map-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .overlay-container {
+    .top-left-overlay {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+    }
+  }
 }
 </style>
