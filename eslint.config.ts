@@ -9,18 +9,19 @@ import pluginVitest from "@vitest/eslint-plugin";
 // More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
 
 export default defineConfigWithVueTs(
-  {
-    name: "app/files-to-lint",
-    files: ["**/*.{ts,mts,tsx,vue}"],
-  },
-
   globalIgnores(["**/dist/**", "**/dist-ssr/**", "**/coverage/**"]),
-
-  pluginVue.configs["flat/essential"],
-  vueTsConfigs.recommended,
-
   {
-    ...pluginVitest.configs.recommended,
+    files: ["**/*.{ts,mts,tsx,vue}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "vue/multi-word-component-names": "warn",
+    },
+    ...pluginVue.configs["flat/essential"],
+    ...vueTsConfigs.recommended,
+  },
+  {
     files: ["src/**/__tests__/*"],
+    ...pluginVitest.configs.recommended,
   }
 );

@@ -1,0 +1,29 @@
+@import "@fontsource/poppins/100.css";
+@import "@fontsource/poppins/200.css";
+@import "@fontsource/poppins/300.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/poppins/800.css";
+@import "@fontsource/poppins/900.css";
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  background-color: rgb(var(--v-theme-background));
+  color: rgb(var(--v-theme-on-background));
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.v-overlay-container {
+  .v-menu {
+    .custom-select-item {
+      .v-list {
+        background: #fff !important;
+      }
+    }
+  }
+}
